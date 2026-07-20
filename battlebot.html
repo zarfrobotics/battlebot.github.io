@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dEaTh wEdGe</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='10,80 90,50 10,20' fill='%23a31f1f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<!--
+  Things to swap out later:
+  1. Gallery photos -> search "GALLERY-PHOTO", replace the placeholder box with <img src="...">
+  2. Physical specs -> search "SPEC-PHYSICAL" (weight/weapon/chassis are placeholders — edit to your real numbers)
+  3. About text  -> search "ABOUT-TEXT", write it in your own words
+-->
+
+<style>
+  :root{
+    --bg:#0d0d0c;
+    --panel:#161513;
+    --line:#2a2825;
+    --text:#e9e6e0;
+    --muted:#9c9890;
+    --red:#a31f1f;
+    --gold:#b8933f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;
+  }
+  h1,h2,h3,.mono-label{font-family:'Oswald',sans-serif;}
+  a{color:var(--gold);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  img{max-width:100%;display:block;}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px;}
+  section{padding:70px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+
+  .mono-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--red);margin-bottom:.6rem;
+  }
+  h2{font-size:1.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.02em;margin-bottom:1.2rem;}
+
+  /* nav */
+  header.nav{
+    position:sticky;top:0;z-index:10;
+    background:rgba(13,13,12,.92);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;max-width:900px;margin:0 auto;}
+  .logo{font-family:'Oswald',sans-serif;font-weight:600;font-size:1rem;letter-spacing:.02em;color:var(--text);}
+  .logo span{color:var(--red);}
+  .nav-links{display:flex;gap:22px;font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.05em;}
+  .nav-links a{color:var(--muted);}
+  .nav-links a:hover{color:var(--gold);}
+  @media(max-width:520px){.nav-links{gap:12px;font-size:.65rem;}}
+
+  /* hero */
+  .hero{padding:90px 0 60px;border-bottom:1px solid var(--line);}
+  .hero h1{
+    font-size:clamp(2.6rem,8vw,4.4rem);
+    font-weight:700;letter-spacing:.01em;line-height:1;
+    margin-bottom:.9rem;
+  }
+  .hero p{color:var(--muted);max-width:52ch;margin-bottom:1.6rem;font-size:1.05rem;}
+  .credit{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted);margin-bottom:1.8rem;}
+  .credit b{color:var(--gold);font-weight:600;}
+  .btn{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+    padding:.8rem 1.4rem;border:1px solid var(--red);color:var(--text);
+    transition:background .2s, color .2s;
+  }
+  .btn:hover{background:var(--red);color:#fff;text-decoration:none;}
+
+  /* specs */
+  .spec-cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+  @media(max-width:640px){.spec-cols{grid-template-columns:1fr;}}
+  .spec-list{list-style:none;}
+  .spec-list li{
+    display:flex;justify-content:space-between;gap:12px;
+    padding:.65rem 0;border-bottom:1px solid var(--line);font-size:.95rem;
+  }
+  .spec-list li span:first-child{color:var(--muted);}
+  .spec-list li span:last-child{font-family:'JetBrains Mono',monospace;font-size:.85rem;}
+
+  /* gallery */
+  .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  @media(max-width:640px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+  .gphoto{
+    aspect-ratio:4/3;background:var(--panel);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;
+  }
+
+  /* components table */
+  .comp-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+  .comp-table th{
+    font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+    text-align:left;color:var(--gold);background:var(--panel);
+    padding:.7rem .8rem;border:1px solid var(--line);
+  }
+  .comp-table td{
+    padding:.8rem .8rem;border:1px solid var(--line);vertical-align:top;color:var(--muted);
+  }
+  .comp-table td:first-child{color:var(--text);font-weight:600;white-space:nowrap;}
+  .comp-table tr:nth-child(even) td{background:rgba(255,255,255,.015);}
+  .comp-wrap{overflow-x:auto;}
+  @media(max-width:640px){ .comp-table{font-size:.8rem;} .comp-table td, .comp-table th{padding:.6rem;} }
+
+  /* code */
+  .tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:0;}
+  .tab{
+    font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;
+    background:none;border:none;color:var(--muted);padding:.7rem 1.1rem;cursor:pointer;border-bottom:2px solid transparent;
+  }
+  .tab.active{color:var(--gold);border-bottom-color:var(--red);}
+  .code-panel{border:1px solid var(--line);border-top:none;background:#0a0a09;}
+  .code-scroll{max-height:420px;overflow:auto;}
+  .code-scroll pre{margin:0;padding:1rem 1.1rem;}
+  .code-scroll code{font-family:'JetBrains Mono',monospace!important;font-size:.76rem;line-height:1.6;}
+  .code-view{display:none;}
+  .code-view.active{display:block;}
+  .copy-btn{
+    font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;
+    background:none;border:1px solid var(--line);color:var(--muted);padding:.35rem .7rem;cursor:pointer;
+    float:right;margin:.6rem .6rem 0 0;
+  }
+  .copy-btn:hover{color:var(--gold);border-color:var(--gold);}
+
+  .hljs{background:transparent!important;color:var(--text);}
+  .hljs-comment{color:#7a7772;font-style:italic;}
+  .hljs-keyword,.hljs-built_in{color:var(--gold);}
+  .hljs-string{color:#c98b8b;}
+  .hljs-number{color:var(--red);}
+  .hljs-title,.hljs-title.function_{color:var(--text);}
+
+  /* about */
+  .about p{max-width:60ch;color:var(--muted);}
+  .about p + p{margin-top:.9rem;}
+
+  footer{
+    padding:32px 0;text-align:center;
+    font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--muted);
+  }
+  footer b{color:var(--gold);}
+
+  /* simple fade-in, subtle */
+  .fade{opacity:0;transform:translateY(12px);transition:opacity .5s ease, transform .5s ease;}
+  .fade.in{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    .fade{opacity:1;transform:none;transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo">d<span>Ea</span>Th w<span>Ed</span>Ge</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#specs">Specs</a>
+      <a href="#components">Components</a>
+      <a href="#code">Code</a>
+      <a href="#gallery">Gallery</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="mono-label">Combat Robotics — Wedge Class</div>
+    <h1>dEaTh wEdGe</h1>
+    <p>A wedge-bot built to get low, get under, and get it over with.</p>
+    <div class="credit">Built by <b>Zarf</b> &amp; <b>Hitansh</b></div>
+    <a href="#code" class="btn">View the code</a>
+  </section>
+
+  <section id="about" class="fade">
+    <div class="mono-label">About</div>
+    <h2>The Build</h2>
+    <!-- ABOUT-TEXT: write this in your own words -->
+    <div class="about">
+      <p>dEaTh wEdGe is a combat wedge robot built by Zarf and Hitansh. It's controlled over ESP-NOW from a two-axis joystick remote, driven by a dual motor setup on a custom chassis.</p>
+      <p>The remote reads the joystick, filters out drift and noise, and fires off a command packet 50 times a second. The car mixes those into left/right motor speeds and drives — and if the signal ever drops for half a second, it stops dead rather than run blind.</p>
+    </div>
+  </section>
+
+  <section id="specs" class="fade">
+    <div class="mono-label">Specs</div>
+    <h2>Vitals</h2>
+    <div class="spec-cols">
+      <div>
+        <div class="mono-label" style="color:var(--muted);margin-bottom:.8rem;">Chassis &amp; Weapon</div>
+        <ul class="spec-list">
+          <li><span>Weight class</span><span>1.5 kg · 3.3 lb</span></li>
+          <li><span>Chassis</span><span>20-ga welded steel</span></li>
+          <li><span>Armor</span><span>20-gauge steel sheet</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="mono-label" style="color:var(--muted);margin-bottom:.8rem;">Control</div>
+        <ul class="spec-list">
+          <li><span>Control link</span><span>ESP-NOW</span></li>
+          <li><span>Update rate</span><span>50 Hz</span></li>
+          <li><span>Drive PWM</span><span>20 kHz / 8-bit</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="components" class="fade">
+    <div class="mono-label">Components</div>
+    <h2>Components &amp; Specifications</h2>
+    <div class="comp-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr><th>Component</th><th>Specs / Details</th><th>Why Chosen</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Johnson Geared DC Motor (x2)</td>
+            <td>12V, 60 RPM<br>Torque: 38 kg-cm<br>Base: 18000 RPM<br>Shaft: 6mm, M3 holes</td>
+            <td>Massive torque for pushing opponents. Metal gearbox = reliable under load. Runs 6&ndash;18V range.</td>
+          </tr>
+          <tr>
+            <td>18650 Li-ion Batteries (x3)</td>
+            <td>3.7V each, ~2500mAh<br>In series = 11.1V nominal<br>12.6V fully charged</td>
+            <td>Perfectly matches motor rated voltage. High burst current for motor spikes. Rechargeable, lightweight.</td>
+          </tr>
+          <tr>
+            <td>L298N Motor Driver</td>
+            <td>Up to 46V, 2A cont.<br>3A peak per channel<br>Built-in flyback diodes</td>
+            <td>Handles direction + PWM speed control. Compatible with ESP32 logic levels. Protects ESP32 from motor current.</td>
+          </tr>
+          <tr>
+            <td>ESP32 (Receiver)</td>
+            <td>Dual-core 240MHz<br>Built-in WiFi &amp; BT<br>GPIO PWM support</td>
+            <td>Runs ESP-NOW protocol for low latency control. Handles motor PWM via LEDC. Small, powerful, affordable.</td>
+          </tr>
+          <tr>
+            <td>ESP32 + 2x Joystick (TX)</td>
+            <td>Analog joysticks<br>GPIO 32 (LR), 33 (FB)<br>5-sample ADC averaging</td>
+            <td>Dual-axis control &mdash; one joystick per axis. Deadzone filtering eliminates ADC noise and drift.</td>
+          </tr>
+          <tr>
+            <td>Chassis</td>
+            <td>20-gauge steel sheet<br>Welded joints<br>Spray painted</td>
+            <td>Steel withstands battle impacts. Welded &gt; bolted for structural integrity. Low profile wedge design.</td>
+          </tr>
+          <tr>
+            <td>BO Wheels (x2)</td>
+            <td>Rubber grip<br>6mm shaft hole<br>Front: swivel caster</td>
+            <td>Matched to Johnson motor shaft size. Good traction on competition floor.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="code" class="fade">
+    <div class="mono-label">Firmware</div>
+    <h2>How It Works</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="tx">transmitter.ino</button>
+      <button class="tab" data-tab="rx">receiver.ino</button>
+    </div>
+    <div class="code-panel">
+      <button class="copy-btn" id="copyBtn">Copy</button>
+      <div class="code-scroll">
+        <div class="code-view active" id="view-tx"><pre><code class="language-cpp">#include &lt;esp_now.h&gt;
+#include &lt;WiFi.h&gt;
+
+// Use these pins — more stable ADC on ESP32
+#define JOY_LR  32
+#define JOY_FB  33
+
+uint8_t receiverMAC[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+
+typedef struct {
+  int lr;
+  int fb;
+} JoyData;
+
+JoyData data;
+esp_now_peer_info_t peerInfo;
+
+int applyDeadzone(int val, int dz = 30) {  // increased deadzone
+  return (abs(val) &lt; dz) ? 0 : val;
+}
+
+void onSent(const uint8_t *mac, esp_now_send_status_t status) {
+  // Serial.println(status == ESP_NOW_SEND_SUCCESS ? "OK" : "FAIL");
+}
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("ESP-NOW init failed!");
+    while (true);
+  }
+
+  esp_now_register_send_cb(onSent);
+
+  memcpy(peerInfo.peer_addr, receiverMAC, 6);
+  peerInfo.channel = 0;
+  peerInfo.encrypt = false;
+
+  if (esp_now_add_peer(&amp;peerInfo) != ESP_OK) {
+    Serial.println("Failed to add peer!");
+    while (true);
+  }
+
+  Serial.println("Transmitter ready!");
+  Serial.print("MAC: "); Serial.println(WiFi.macAddress());
+}
+
+void loop() {
+  // Average 5 readings to reduce ADC noise
+  long rawLR = 0, rawFB = 0;
+  for (int i = 0; i &lt; 5; i++) {
+    rawLR += analogRead(JOY_LR);
+    rawFB += analogRead(JOY_FB);
+  }
+  rawLR /= 5;
+  rawFB /= 5;
+
+  data.lr = applyDeadzone(map(rawLR, 0, 4095, -255, 255));
+  data.fb = applyDeadzone(map(rawFB, 0, 4095, -255, 255));
+
+  // Debug — uncomment to check values
+  // Serial.printf("LR: %d  FB: %d\n", data.lr, data.fb);
+
+  esp_now_send(receiverMAC, (uint8_t *)&amp;data, sizeof(data));
+  delay(20);
+}
+</code></pre></div>
+        <div class="code-view" id="view-rx"><pre><code class="language-cpp">#include &lt;esp_now.h&gt;
+#include &lt;WiFi.h&gt;
+
+#define IN1 26
+#define IN2 27
+#define ENA 25
+#define IN3 14
+#define IN4 12
+#define ENB 33
+
+#define CH_LEFT  0
+#define CH_RIGHT 1
+#define PWM_FREQ 20000  // 20kHz — silent!
+#define PWM_RES  8
+#define TIMEOUT_MS 500
+
+unsigned long lastPacket = 0;
+
+typedef struct {
+  int lr;
+  int fb;
+} JoyData;
+
+JoyData incoming;
+
+void setLeft(int spd) {
+  if (spd &gt; 0)      { digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW); }
+  else if (spd &lt; 0) { digitalWrite(IN1, LOW);  digitalWrite(IN2, HIGH); }
+  else              { digitalWrite(IN1, LOW);   digitalWrite(IN2, LOW); }
+  ledcWrite(CH_LEFT, abs(spd));
+}
+
+void setRight(int spd) {
+  if (spd &gt; 0)      { digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW); }
+  else if (spd &lt; 0) { digitalWrite(IN3, LOW);  digitalWrite(IN4, HIGH); }
+  else              { digitalWrite(IN3, LOW);   digitalWrite(IN4, LOW); }
+  ledcWrite(CH_RIGHT, abs(spd));
+}
+
+void stopMotors() {
+  digitalWrite(IN1,LOW); digitalWrite(IN2,LOW);
+  digitalWrite(IN3,LOW); digitalWrite(IN4,LOW);
+  ledcWrite(CH_LEFT,  0);
+  ledcWrite(CH_RIGHT, 0);
+}
+
+void drive(int fb, int lr) {
+  int leftSpd  = constrain(fb + lr, -255, 255);
+  int rightSpd = constrain(fb - lr, -255, 255);
+
+  // Boost: scale up so full joystick = full speed always
+  int maxVal = max(abs(leftSpd), abs(rightSpd));
+  if (maxVal &gt; 0 &amp;&amp; (abs(fb) == 255 || abs(lr) == 255)) {
+    leftSpd  = leftSpd  * 255 / maxVal;
+    rightSpd = rightSpd * 255 / maxVal;
+  }
+
+  setLeft(leftSpd);
+  setRight(rightSpd);
+}
+
+void onReceive(const uint8_t *mac, const uint8_t *incomingData, int len) {
+  if (len != sizeof(JoyData)) return;
+  memcpy(&amp;incoming, incomingData, sizeof(JoyData));
+  lastPacket = millis();
+  drive(incoming.fb, incoming.lr);
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(IN1,OUTPUT); pinMode(IN2,OUTPUT);
+  pinMode(IN3,OUTPUT); pinMode(IN4,OUTPUT);
+
+  ledcSetup(CH_LEFT,  PWM_FREQ, PWM_RES);
+  ledcSetup(CH_RIGHT, PWM_FREQ, PWM_RES);
+  ledcAttachPin(ENA, CH_LEFT);
+  ledcAttachPin(ENB, CH_RIGHT);
+  stopMotors();
+
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("ESP-NOW init failed!");
+    while (true);
+  }
+
+  esp_now_register_recv_cb(onReceive);
+  Serial.println("Receiver ready!");
+  Serial.print("MAC: "); Serial.println(WiFi.macAddress());
+}
+
+void loop() {
+  if (millis() - lastPacket &gt; TIMEOUT_MS) {
+    stopMotors();
+  }
+}
+</code></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="fade">
+    <div class="mono-label">Gallery</div>
+    <h2>Photos</h2>
+    <!-- GALLERY-PHOTO: replace each box with <img src="your-photo.jpg" alt="..."> -->
+    <div class="gallery-grid">
+      <div class="gphoto">photo soon</div>
+      <div class="gphoto">photo soon</div>
+      <div class="gphoto">photo soon</div>
+      <div class="gphoto">photo soon</div>
+      <div class="gphoto">photo soon</div>
+      <div class="gphoto">photo soon</div>
+    </div>
+  </section>
+</div>
+
+<footer>Built by <b>Zarf</b> &amp; <b>Hitansh</b> · <span id="year"></span></footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// tabs
+const tabs = document.querySelectorAll('.tab');
+tabs.forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    tabs.forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.code-view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+tab.dataset.tab).classList.add('active');
+  });
+});
+
+// copy
+document.getElementById('copyBtn').addEventListener('click', ()=>{
+  const code = document.querySelector('.code-view.active code').textContent;
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn = document.getElementById('copyBtn');
+    const old = btn.textContent;
+    btn.textContent = 'Copied';
+    setTimeout(()=>btn.textContent = old, 1200);
+  });
+});
+
+// subtle fade-in on scroll
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+  });
+},{threshold:.1});
+document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+
+if(window.hljs){ hljs.highlightAll(); }
+</script>
+</body>
+</html>
